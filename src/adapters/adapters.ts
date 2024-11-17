@@ -1,11 +1,11 @@
-import { LibAdapters, IMemoryDb, NotSupported, QueryResult, SlonikAdapterOptions, BindServerOptions, BindServerResult } from '../interfaces';
 import lru from 'lru-cache';
-import { compareVersions, delay, doRequire, timeoutOrImmediate } from '../utils';
-import { toLiteral } from '../misc/pg-utils';
-import { _IDb, _IType } from '../interfaces-private';
-import { TYPE_SYMBOL } from '../execution/select';
 import { ArrayType } from '../datatypes';
 import { CustomEnumType } from '../datatypes/t-custom-enum';
+import { TYPE_SYMBOL } from '../execution/select';
+import { BindServerOptions, BindServerResult, LibAdapters, NotSupported, QueryResult, SlonikAdapterOptions } from '../interfaces';
+import { _IDb, _IType } from '../interfaces-private';
+import { toLiteral } from '../misc/pg-utils';
+import { compareVersions, delay, doRequire, timeoutOrImmediate } from '../utils';
 import { bindPgServer, socketAdapter } from './pg-socket-adapter';
 
 
@@ -172,7 +172,7 @@ export class Adapters implements LibAdapters {
         const that = this;
         (postgresOptions as any).postgres = that.createPg(queryLatency);
         if (postgresOptions?.type !== 'postgres') {
-            throw new NotSupported('Only postgres supported, found ' + postgresOptions?.type ?? '<null>')
+            throw new NotSupported('Only postgres supported, found ' + postgresOptions?.type)
         }
 
         const { getConnectionManager } = doRequire('typeorm')
@@ -185,7 +185,7 @@ export class Adapters implements LibAdapters {
         const that = this;
         (postgresOptions as any).postgres = that.createPg(queryLatency);
         if (postgresOptions?.type !== 'postgres') {
-            throw new NotSupported('Only postgres supported, found ' + postgresOptions?.type ?? '<null>')
+            throw new NotSupported('Only postgres supported, found ' + postgresOptions?.type)
         }
 
         const nr = doRequire('typeorm');
