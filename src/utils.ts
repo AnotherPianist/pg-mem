@@ -1,8 +1,8 @@
-import moment from 'moment';
 import { List } from 'immutable';
-import { IValue, NotSupported, RegClass, _IRelation, _ISchema, _ISelection, _ITable, _IType, _Transaction } from './interfaces-private';
-import { BinaryOperator, DataTypeDef, Expr, ExprRef, ExprValueKeyword, Interval, nil, parse, QName, SelectedColumn } from 'pgsql-ast-parser';
+import moment from 'moment';
+import { BinaryOperator, DataTypeDef, Expr, ExprRef, Interval, nil, parse, QName, SelectedColumn } from 'pgsql-ast-parser';
 import { ColumnNotFound, ISubscription, IType, QueryError, typeDefToStr } from './interfaces';
+import { _ISchema, _ISelection, _IType, _Transaction, IValue, NotSupported, RegClass } from './interfaces-private';
 import { bufClone, bufCompare, isBuf } from './misc/buffer-node';
 
 declare var __non_webpack_require__: any;
