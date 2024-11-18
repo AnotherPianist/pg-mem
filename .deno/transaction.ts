@@ -1,6 +1,6 @@
-import { _Transaction } from './interfaces-private.ts';
 import { Map as ImMap, Set as ImSet } from 'https://deno.land/x/immutable@4.0.0-rc.12-deno.1/mod.ts';
-import { NotSupported, QueryError } from './interfaces.ts';
+import { NotSupported } from './interfaces.ts';
+import { _Transaction } from './interfaces-private.ts';
 
 export class Transaction implements _Transaction {
     private origData: ImMap<symbol, any>;
@@ -90,5 +90,15 @@ export class Transaction implements _Transaction {
 
     clearTransientData(): void {
         this.transientData = {};
+    }
+
+    serialize(): string {
+        return JSON.stringify({ data: this.data.toJS() });
+    }
+
+    static deserialize(serialized: string): Transaction {
+        const parsed = JSON.parse(serialized);
+        const data = ImMap<symbol, any>(parsed.data);
+        return new Transaction(null, data);
     }
 }

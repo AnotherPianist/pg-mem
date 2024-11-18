@@ -1,4 +1,4 @@
-import { TableConstraint, CreateColumnDef, NodeLocation, DataTypeDef, FunctionArgumentMode, BinaryOperator, Statement } from 'https://deno.land/x/pgsql_ast_parser@12.0.1/mod.ts';
+import { BinaryOperator, CreateColumnDef, DataTypeDef, FunctionArgumentMode, NodeLocation, Statement, TableConstraint } from 'https://deno.land/x/pgsql_ast_parser@12.0.1/mod.ts';
 import { MigrationParams } from './migrate/migrate-interfaces.ts';
 
 
@@ -194,6 +194,12 @@ export interface IBackup {
      * 👉 Schema must not have been changed since then !
      **/
     restore(): void;
+}
+
+export interface ISerializedDb {
+    data: string;
+    schemas: string[];
+    options: MemoryDbOptions;
 }
 
 export interface LibAdapters {

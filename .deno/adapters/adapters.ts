@@ -1,11 +1,11 @@
-import { LibAdapters, IMemoryDb, NotSupported, QueryResult, SlonikAdapterOptions, BindServerOptions, BindServerResult } from '../interfaces.ts';
 import lru from 'https://deno.land/x/lru_cache@6.0.0-deno.4/mod.ts';
-import { compareVersions, delay, doRequire, timeoutOrImmediate } from '../utils.ts';
-import { toLiteral } from '../misc/pg-utils.ts';
-import { _IDb, _IType } from '../interfaces-private.ts';
-import { TYPE_SYMBOL } from '../execution/select.ts';
 import { ArrayType } from '../datatypes/index.ts';
 import { CustomEnumType } from '../datatypes/t-custom-enum.ts';
+import { TYPE_SYMBOL } from '../execution/select.ts';
+import { BindServerOptions, BindServerResult, LibAdapters, NotSupported, QueryResult, SlonikAdapterOptions } from '../interfaces.ts';
+import { _IDb, _IType } from '../interfaces-private.ts';
+import { toLiteral } from '../misc/pg-utils.ts';
+import { compareVersions, delay, doRequire, timeoutOrImmediate } from '../utils.ts';
 import { bindPgServer, socketAdapter } from './pg-socket-adapter.ts';
 
 
@@ -172,7 +172,7 @@ export class Adapters implements LibAdapters {
         const that = this;
         (postgresOptions as any).postgres = that.createPg(queryLatency);
         if (postgresOptions?.type !== 'postgres') {
-            throw new NotSupported('Only postgres supported, found ' + postgresOptions?.type ?? '<null>')
+            throw new NotSupported('Only postgres supported, found ' + postgresOptions?.type)
         }
 
         const { getConnectionManager } = doRequire('typeorm')
@@ -185,7 +185,7 @@ export class Adapters implements LibAdapters {
         const that = this;
         (postgresOptions as any).postgres = that.createPg(queryLatency);
         if (postgresOptions?.type !== 'postgres') {
-            throw new NotSupported('Only postgres supported, found ' + postgresOptions?.type ?? '<null>')
+            throw new NotSupported('Only postgres supported, found ' + postgresOptions?.type)
         }
 
         const nr = doRequire('typeorm');

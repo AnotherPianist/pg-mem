@@ -1,20 +1,20 @@
-import { Schema, IMemoryDb, ISchema, TableEvent, GlobalEvent, QueryError, IBackup, MemoryDbOptions, ISubscription, LanguageCompiler, nil } from './interfaces.ts';
-import { _IDb, _ISelection, _ITable, _Transaction, _ISchema, _FunctionDefinition, GLOBAL_VARS, _IType, _OperatorDefinition, IValue } from './interfaces-private.ts';
-import { DbSchema } from './schema/schema.ts';
-import { initialize } from './transforms/transform-base.ts';
-import { buildSelection } from './transforms/selection.ts';
-import { buildAlias } from './transforms/alias.ts';
-import { buildFilter } from './transforms/build-filter.ts';
+import { BinaryOperator, QName } from 'https://deno.land/x/pgsql_ast_parser@12.0.1/mod.ts';
 import { Adapters } from './adapters/index.ts';
+import { GlobalEvent, IBackup, IMemoryDb, ISchema, ISerializedDb, ISubscription, LanguageCompiler, MemoryDbOptions, nil, QueryError, TableEvent } from './interfaces.ts';
+import { _FunctionDefinition, _IDb, _ISchema, _ITable, _OperatorDefinition, GLOBAL_VARS, IValue } from './interfaces-private.ts';
+import { setupInformationSchema } from './schema/information-schema/index.ts';
+import { setupPgCatalog } from './schema/pg-catalog/index.ts';
+import { DbSchema } from './schema/schema.ts';
 import { Transaction } from './transaction.ts';
 import { buildGroupBy } from './transforms/aggregation.ts';
-import { buildLimit } from './transforms/limit.ts';
-import { buildUnion } from './transforms/union.ts';
+import { buildAlias } from './transforms/alias.ts';
+import { buildFilter } from './transforms/build-filter.ts';
 import { buildDistinct } from './transforms/distinct.ts';
+import { buildLimit } from './transforms/limit.ts';
 import { buildOrderBy } from './transforms/order-by.ts';
-import { setupPgCatalog } from './schema/pg-catalog/index.ts';
-import { setupInformationSchema } from './schema/information-schema/index.ts';
-import { QName, BinaryOperator } from 'https://deno.land/x/pgsql_ast_parser@12.0.1/mod.ts';
+import { buildSelection } from './transforms/selection.ts';
+import { initialize } from './transforms/transform-base.ts';
+import { buildUnion } from './transforms/union.ts';
 import { asSingleQName } from './utils.ts';
 
 export function newDb(opts?: MemoryDbOptions): IMemoryDb {
@@ -186,6 +186,33 @@ class MemoryDb implements _IDb {
 
     listSchemas() {
         return [...this.schemas.values()];
+    }
+
+    /**
+     * Serializes the database state to a JSON string.
+     */
+    serialize(): ISerializedDb {
+        return {
+            data: JSON.stringify(this.data),
+            schemas: [...this.schemas.keys()],
+            options: this.options,
+        };
+    }
+
+    /**
+     * Deserializes a JSON string to reconstruct the database state.
+     * @param serialized The serialized database state.
+     */
+    static deserialize(serialized: ISerializedDb): MemoryDb {
+        const data = Transaction.deserialize(serialized.data);
+        const schemas = new Map<string, _ISchema>();
+        const db = new MemoryDb(data, schemas, serialized.options);
+
+        for (const schemaName of serialized.schemas) {
+            db.createSchema(schemaName);
+        }
+
+        return db;
     }
 
 }
