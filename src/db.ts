@@ -38,7 +38,23 @@ export function newDb(opts?: MemoryDbOptions): IMemoryDb {
     return new MemoryDb(root, undefined, opts ?? {});
 }
 
-export class MemoryDb implements _IDb {
+/**
+ * Deserializes a JSON string to reconstruct the database state.
+ * @param serialized The serialized database state.
+ */
+export function deserialize(serialized: ISerializedDb): MemoryDb {
+    const data = Transaction.deserialize(serialized.data);
+    const schemas = new Map<string, _ISchema>();
+    const db = new MemoryDb(data, schemas, serialized.options);
+
+    for (const schemaName of serialized.schemas) {
+        db.createSchema(schemaName);
+    }
+
+    return db;
+}
+
+class MemoryDb implements _IDb {
 
     private handlers = new Map<TableEvent | GlobalEvent, Set<(...args: any[]) => any>>();
     private schemas = new Map<string, _ISchema>();
@@ -198,23 +214,6 @@ export class MemoryDb implements _IDb {
             options: this.options,
         };
     }
-
-    /**
-     * Deserializes a JSON string to reconstruct the database state.
-     * @param serialized The serialized database state.
-     */
-    static deserialize(serialized: ISerializedDb): MemoryDb {
-        const data = Transaction.deserialize(serialized.data);
-        const schemas = new Map<string, _ISchema>();
-        const db = new MemoryDb(data, schemas, serialized.options);
-
-        for (const schemaName of serialized.schemas) {
-            db.createSchema(schemaName);
-        }
-
-        return db;
-    }
-
 }
 
 class Backup implements IBackup {
