@@ -138,6 +138,8 @@ export interface IMemoryDb {
 
     /** Registers a new language, usable in 'DO' blocks, or in 'CREATE FUNCTION' blocks */
     registerLanguage(languageName: string, compiler: LanguageCompiler): this;
+
+    serialize(): ISerializedDb;
 }
 
 export type QueryInterceptor = (query: string) => any[] | nil;

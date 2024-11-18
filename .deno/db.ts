@@ -38,7 +38,7 @@ export function newDb(opts?: MemoryDbOptions): IMemoryDb {
     return new MemoryDb(root, undefined, opts ?? {});
 }
 
-class MemoryDb implements _IDb {
+export class MemoryDb implements _IDb {
 
     private handlers = new Map<TableEvent | GlobalEvent, Set<(...args: any[]) => any>>();
     private schemas = new Map<string, _ISchema>();
