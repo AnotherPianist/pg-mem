@@ -1,7 +1,7 @@
 {
-  "name": "pg-mem",
-  "version": "3.0.3",
-  "description": "A memory version of postgres",
+  "name": "pg-mem-serialize",
+  "version": "0.0.1",
+  "description": "A memory version of postgres with serialization",
   "main": "index.js",
   "scripts": {
     "build": "rimraf lib && NODE_OPTIONS=--openssl-legacy-provider webpack --config ./tools/webpack.config.js --prod && bun build-types",
@@ -16,9 +16,9 @@
     "build:deno": "node ./tools/deno-transpile.js --copy && node ./tools/deno-transpile.js --process",
     "cover": "NODE_OPTIONS=--openssl-legacy-provider cross-env NODE_ENV=coverage nyc --reporter=lcov --reporter=text bun test"
   },
-  "author": "Olivier Guimbal",
-  "repository": "https://github.com/oguimbal/pg-mem",
-  "issues": "https://github.com/oguimbal/pg-mem/issues",
+  "author": "AnotherPianist",
+  "repository": "https://github.com/AnotherPianist/pg-mem",
+  "issues": "https://github.com/AnotherPianist/pg-mem/issues",
   "keywords": [
     "postgres",
     "pg-mock",
